@@ -1,7 +1,7 @@
 
 #include <time.h>
 #include "calc.h"
-
+#include <stdio.h>
 
 typedef double (*getter_t)(character_t*);    //pointer to character_t method
 
@@ -15,8 +15,21 @@ static
 double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG);
 
 
+unsigned int dpr(character_t *ch){
+	int stacks = 3;
+	double ca_total_dmg = dpCA_string(ch, stacks);	// +3 stacks
+	double burst_total_dmg = dpq(ch, &stacks);		// +1 stack
+	ca_total_dmg += dpCA_string(ch, 1);				// +1 stack
+ 	double skill_total_dmg = dpe(ch, ++stacks);		// 5 stacks
+	
+	printf("\n--- CA total dmg = %u\n\n", (int) ca_total_dmg);
+	printf("--- SKILL total dmg = %d\n\n", (int) skill_total_dmg);
+	printf("--- BURST total dmg = %d\n\n", (int) burst_total_dmg);
 
-double dpCA_string(character_t *ch, char* set, size_t instances){
+	return ca_total_dmg + skill_total_dmg + burst_total_dmg;
+}
+
+double dpCA_string(character_t *ch, size_t instances){
 	double total_dmg = 0;
 	for (size_t i = 0; i < instances; i++){
 		total_dmg += dmg(ch, PROP_ARROW_9, 0, CA_DMG_BUFF);			//CA #i					0s
@@ -26,9 +39,19 @@ double dpCA_string(character_t *ch, char* set, size_t instances){
 	return total_dmg;
 }
 
-double dpe(character_t *ch, char* set, int stacks){
-	return (dmg(ch, SKILL_BONUS_9, character_atk(ch) * SKILL_BONUS_9 * stacks, 1));
+
+double dpe(character_t *ch, int stacks){
+	return (dmg(ch, SKILL_9, (character_atk(ch) * SKILL_BONUS_9 * stacks), SKILL_DMG_BUFF));
 }
+
+
+double dpq(character_t *ch , int *stacks){
+	(*stacks)++;
+	double first_hit = dmg(ch, BURST_INIT_9, 0, BURST_DMG_BUFF);
+	double second_hit = dmg(ch, BURST_FINAL_9, 0, BURST_DMG_BUFF);
+	return first_hit + second_hit;
+}
+
 
 static
 double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG){

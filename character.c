@@ -90,7 +90,7 @@ void character_setup(character_t *ch, weapon_t *weapon, char *set, goblet_t circ
 	ch->atk	= ch->base_atk * 1.46 + 311;
 	ch->hp	= 20000;
 	ch->em = 0;
-	ch->dmg	= 0.46;
+	ch->dmg	= 1.46;
 	ch->crate = 0.245;
 	ch->cdmg = 0.500;
 	ch->conditional_dmg [0]= 0.0;
@@ -98,7 +98,7 @@ void character_setup(character_t *ch, weapon_t *weapon, char *set, goblet_t circ
 	ch->conditional_dmg [2]= 0.0;
 
 	switch (circlet){
-		case CRIT_RATE: ch->crate += 0.311; break;
+		case CRIT_RATE: ch->crate += 0.471; break;
 		case CRIT_DMG: ch->cdmg += 0.611; break;
 		default: ch->crate += 0.0; ch->cdmg += 0.0; break;
 	}
@@ -158,12 +158,15 @@ void set_add_stats(char *set, character_t *ch){
 	} else if (strcmp(set, "SR") == 0){	    //4PC Shimenawa
 		ch->conditional_dmg[0] += 0.5;
 		ch->atk += ch->base_atk * 0.18;
+	} else if (strcmp(set, "WT") == 0){
+		ch->em += 80;
+		ch->conditional_dmg[0] += 0.35;
 	}
 	//TODO: agregar sets
 }
 
 void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em){
-	ch->atk += ch->base_atk*atk;
+	ch->atk += ch->base_atk*atk + flat_atk;
 	ch->crate += crit_rate;
 	ch->cdmg += crit_dmg;
 	ch->em +=em;

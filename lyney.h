@@ -14,8 +14,8 @@
 #define SKILL_BONUS_9	0.83
 //
 //Burst constants
-#define BURST_INIT_9    7.038
-#define BURST_FINAL_9   2.346
+#define BURST_INIT_9    2.346
+#define BURST_FINAL_9   7.038
 
 
 #endif
