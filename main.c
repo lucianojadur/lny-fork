@@ -1,8 +1,3 @@
-
-
-
-
-
 /*
  * =====================================================================================
  *
@@ -20,8 +15,8 @@
  *
  * =====================================================================================
  */
+
 #include <stdlib.h>
-//#include <math.h>
 #include <stdio.h>
 #include <time.h>
 #include "character.h"
@@ -29,12 +24,14 @@
 #include "calc.h"
 
 
+static void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet);
+static unsigned int run(weapon_t *weapon, artifacts_t set, circlet_t circlet);
 
-/* 
- * returns crt dmg multiplier if crit <= ayato.crate  (i.e. crit is inside the
- * range)*/
-double crit_hit(double crit, character_t *ayato);
 
+// main stats arbitrary increases
+const double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
+const double crit_dmg_rolls = 0.148 + 0.21 + 0.14 + 0.204;
+const double crit_rate_rolls = 0.074 + 0.105 + 0.039; 
 
 
 int main(void){
@@ -42,94 +39,102 @@ int main(void){
 	unsigned int total_dpr = 0;
 
 	srand((unsigned) time(NULL));
-	weapon_t *weapon = character_weapon_create("the_first_great_magic", 608, 0.662);
-	
-	if (weapon == NULL){
+
+	weapon_t *signature = character_weapon_create("the_first_great_magic", 608, 0.662);
+	if (signature == NULL){
 		fprintf(stderr, "error at creating the instance of weapon\n");
-		goto exit_error;
+		goto free_sig;
 	}
 	
-	//
-	// main stats arbitrary increases
-	double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
-	double crit_dmg_rolls = 0.148 + 0.21 + 0.14 + 0.204;
-	double crit_rate_rolls = 0.074 + 0.105 + 0.060 + 0.039; 
+	weapon_t *polar = character_weapon_create("polar_star", 608, 0.331);
+	if (signature == NULL){
+		fprintf(stderr, "error at creating the instance of weapon\n");
+		goto free_polar;
+	}
+
+	weapon_t *harp = character_weapon_create("skyward_harp", 674, 0.221);
+	if (signature == NULL){
+		fprintf(stderr, "error at creating the instance of weapon\n");
+		goto free_harp;
+	}
+
+	weapon_t *pulse = character_weapon_create("thundering_pulse", 608, 0.662);
+	if (signature == NULL){
+		fprintf(stderr, "error at creating the instance of weapon\n");
+		goto free_pulse;
+	}
+
+	weapon_t *aqua = character_weapon_create("aqua_simulacra", 542, 0.882);
+	if (signature == NULL){
+		fprintf(stderr, "error at creating the instance of weapon\n");
+		goto free_aqua;
+	}
+	
 /*
  *	+ ---------- +
  *	| Lavawalker |
  *	+ ---------- +
 */
-	char *lw = "LW"; 
-	character_t *lyney_lw = character_create("Lyney", LYNEY_BA_90);
-	if (lyney_lw == NULL){
-		printf("error at creating instance of lyney_lw (malloc)\n");
-		goto free_weapon;
-	}
-	//
-	//setup
-	character_setup(lyney_lw, weapon, lw, CRIT_RATE);
-	character_add_substats(lyney_lw, bennet_buff, pyro_res + atk_rolls, crit_rate_rolls, crit_dmg_rolls, 0);
-	character_print_stats(lyney_lw);
-
-	//double total_CA_dmg_lw = dpCA_string(lyney_lw, "LW", 3);
-	total_dpr = dpr(lyney_lw);
+	total_dpr = run(signature, LAVAWALKER, CRIT_RATE); 
 	printf("\nTotal dmg (Lavawalker) = " BLU "%u\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ --------- +
  *	| Shimenawa |
  *	+ --------- +
  */	
-	char *shim = "SR";
-	character_t *lyney_sr = character_create("Lyney", LYNEY_BA_90);	//repeated bruh, must refactor
-	if (lyney_sr == NULL){
-		printf("error at creating instance of lyney_sr (malloc)\n");
-		goto free_lw;
-	}
-
-	character_setup(lyney_sr, weapon, shim, CRIT_RATE);
-	character_add_substats(lyney_sr, bennet_buff, pyro_res + atk_rolls, crit_rate_rolls, crit_dmg_rolls, 0);
-	character_print_stats(lyney_sr);
-
-	//double total_CA_dmg_sr = dpCA_string(lyney_sr, 3);
-	total_dpr = dpr(lyney_sr);
+	total_dpr = run(signature, SHIMENAWA, CRIT_RATE); 
 	printf("\nTotal dmg (Shimenawa) = " RED "%u\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ ----------------- +
  *	| Wanderer's Troupe |
  *	+ ----------------- +
  */	
-	char *wt = "WT";
-	character_t *lyney_wt = character_create("Lyney", LYNEY_BA_90);	//repeated bruh, must refactor
-	if (lyney_sr == NULL){
-		printf("error at creating instance of lyney_wt (malloc)\n");
-		goto free_wt;
-	}
-
-	character_setup(lyney_wt, weapon, wt, CRIT_RATE);
-	character_add_substats(lyney_wt, bennet_buff, pyro_res + atk_rolls, crit_rate_rolls, crit_dmg_rolls, 0);
-	character_print_stats(lyney_wt);
-
-	//double total_CA_dmg_sr = dpCA_string(lyney_sr, 3);
-	total_dpr = dpr(lyney_wt);
+	total_dpr = run(signature, WANDERER_TROUPE, CRIT_RATE); 
 	printf("\nTotal dmg (Wanderer's Troupe) = " RED "%u\n-------------------\n\n" RESET, total_dpr);
 
 	ret = 0;
 	goto success;
 
+/*
+ * END 
+ */
 
-free_wt:
-	free(lyney_wt);
-free_lw:
-	free(lyney_lw);
-free_weapon:
-	free(weapon);
-exit_error:
-	return ret;
-	
+free_aqua:
+	character_weapon_destroy(aqua);
+free_pulse:
+	character_weapon_destroy(pulse);
+free_harp:
+	character_weapon_destroy(harp);
+free_polar:
+	character_weapon_destroy(polar);
+free_sig:
+	character_weapon_destroy(signature);
+
 success:
-	return 0;
+	return ret;
 }
 
+
+static
+void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet){
+	character_setup(ch, weapon, set, goblet);
+	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, crit_rate_rolls, crit_dmg_rolls, 0);
+	character_print_stats(ch);
+}
+
+
+static
+unsigned int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
+	character_t *lyney = character_create("Lyney", LYNEY_BA_90);	//repeated bruh, must refactor
+	if (lyney == NULL)
+		return -1;
+	
+	build_and_show(lyney, weapon, set, circlet);
+	int dmg = dpr(lyney);
+	free(lyney);
+
+	return dmg;
+}
 
 
 

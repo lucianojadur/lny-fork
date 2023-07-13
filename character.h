@@ -18,7 +18,7 @@ weapon_t* character_weapon_create(const char *name, int base_atk, double main_st
 
 /*
  * setup */
-void character_setup(character_t *ch, weapon_t *weapon, char *set, goblet_t goblet);
+void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet);
 
 void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em);
 
@@ -35,6 +35,8 @@ double character_Q_dmg(character_t *ch);
 double crit_rate(character_t *ch);
 
 double crit_dmg(character_t *ch);
+
+void character_weapon_destroy(weapon_t *w);
 
 void character_print_stats(character_t *ch);
 

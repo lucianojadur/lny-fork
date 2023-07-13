@@ -22,8 +22,8 @@ struct weapon {
 };
 
 
-static void weapon_add_stats(weapon_t *weapon, character_t *ch);
-static void set_add_stats(char *set, character_t *ch);
+static void weapon_add_stats(character_t *ch, weapon_t *weapon);
+static void set_add_stats(character_t *ch, artifacts_t set);
 
 
 character_t* character_create(const char *name, int base_atk){
@@ -79,9 +79,14 @@ double crit_dmg(character_t *ch){     //should've done with python or fuck the d
     return ch->cdmg;
 }
 
+void character_weapon_destroy(weapon_t *w){
+	free(w->name);
+	free(w);
+}
 
 
-void character_setup(character_t *ch, weapon_t *weapon, char *set, goblet_t circlet){
+
+void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	if (!ch){
 		printf("character is null\n");
 		return;
@@ -98,16 +103,16 @@ void character_setup(character_t *ch, weapon_t *weapon, char *set, goblet_t circ
 	ch->conditional_dmg [2]= 0.0;
 
 	switch (circlet){
-		case CRIT_RATE: ch->crate += 0.471; break;
+		case CRIT_RATE: ch->crate += 0.311; break;
 		case CRIT_DMG: ch->cdmg += 0.611; break;
 		default: ch->crate += 0.0; ch->cdmg += 0.0; break;
 	}
-	weapon_add_stats(weapon, ch);
-	set_add_stats(set, ch);
+	weapon_add_stats(ch, weapon);
+	set_add_stats(ch, set);
 }
 
 static
-void weapon_add_stats(weapon_t *weapon, character_t *ch){
+void weapon_add_stats(character_t *ch, weapon_t *weapon){
 	if (!strcmp(weapon->name, "the_first_great_magic") ){
 		ch->atk += ch->base_atk*0.52;
 		ch->cdmg += weapon->main_stat;
@@ -152,15 +157,24 @@ void weapon_add_stats(weapon_t *weapon, character_t *ch){
 }
 
 static
-void set_add_stats(char *set, character_t *ch){
-	if (strcmp(set, "LW") == 0){			//4PC Lavawalker
-		ch->dmg += 0.35;
-	} else if (strcmp(set, "SR") == 0){	    //4PC Shimenawa
-		ch->conditional_dmg[0] += 0.5;
-		ch->atk += ch->base_atk * 0.18;
-	} else if (strcmp(set, "WT") == 0){
-		ch->em += 80;
-		ch->conditional_dmg[0] += 0.35;
+void set_add_stats(character_t *ch, artifacts_t  set){
+	switch(set){
+		case LAVAWALKER:
+			ch->dmg += 0.35;
+			break;
+		case SHIMENAWA:
+			ch->conditional_dmg[0] += 0.5;
+			ch->atk += ch->base_atk * 0.18;
+			break;
+		case WANDERER_TROUPE:
+			ch->em += 80;
+			ch->conditional_dmg[0] += 0.35;
+			break;
+		case MAREC_HUNTER:
+			break;
+		case ATK_ATK:
+			ch->atk += ch->base_atk * 0.36;
+			break;
 	}
 	//TODO: agregar sets
 }

@@ -8,7 +8,14 @@
 #define BLU 	"\033[34;0;0m"
 #define RESET	"\033[0m"
 
-typedef enum {CRIT_RATE, CRIT_DMG} goblet_t;
+typedef enum {CRIT_RATE, CRIT_DMG} circlet_t;
 
+typedef enum {
+    LAVAWALKER,
+    SHIMENAWA,
+    WANDERER_TROUPE,
+    MAREC_HUNTER,
+    ATK_ATK
+} artifacts_t;
 
 #endif
