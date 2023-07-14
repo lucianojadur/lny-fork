@@ -9,14 +9,14 @@ all:$(PROGRAM)
 $(PROGRAM): main.o calc.o character.o  
 	$(CC) $(CFLAGS) -o $(PROGRAM) main.o calc.o character.o $(LDFLAGS) 
 
-main.o: main.c calc.h character.h lyney.h  
-	$(CC) $(CFLAGS) -c main.c
+main.o: src/main.c src/calc.h src/character.h src/lyney.h  
+	$(CC) $(CFLAGS) -c src/main.c
 
-calc.o: calc.c calc.h character.h macros.h lyney.h
-	$(CC) $(CFLAGS) -c calc.c
+calc.o: src/calc.c src/calc.h src/character.h src/macros.h src/lyney.h
+	$(CC) $(CFLAGS) -c src/calc.c
 
-character.o: character.c character.h lyney.h
-	$(CC) $(CFLAGS) -c character.c
+character.o: src/character.c src/character.h src/lyney.h
+	$(CC) $(CFLAGS) -c src/character.c
 
 
 
