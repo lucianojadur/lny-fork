@@ -22,10 +22,10 @@ unsigned int dpr(character_t *ch){
 	ca_total_dmg += dpCA_string(ch, 1);				// +1 stack
  	double skill_total_dmg = dpe(ch, ++stacks);		// 5 stacks
 	
-	printf("\n--- CA total dmg = %u\n\n", (int) ca_total_dmg);
+/*	printf("\n--- CA total dmg = %u\n\n", (int) ca_total_dmg);
 	printf("--- SKILL total dmg = %d\n\n", (int) skill_total_dmg);
 	printf("--- BURST total dmg = %d\n\n", (int) burst_total_dmg);
-
+*/
 	return ca_total_dmg + skill_total_dmg + burst_total_dmg;
 }
 

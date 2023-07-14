@@ -130,10 +130,13 @@ unsigned int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 		return -1;
 	
 	build_and_show(lyney, weapon, set, circlet);
-	int dmg = dpr(lyney);
+	int dmg = 0;
+	for (int i = 0; i < 100; i++){
+		dmg += dpr(lyney);
+	}
 	free(lyney);
 
-	return dmg;
+	return dmg/100;
 }
 
 
