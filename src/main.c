@@ -142,8 +142,7 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	if (lyney == NULL)
 		return ret;
 	
-	size_t dmg_values = 1000;
-	int *values = calloc(dmg_values, sizeof(int));
+	int *values = calloc(1000-OUTPUT_DMG_VALUES_FLOOR, sizeof(int));
 	if (values  == NULL) goto close_values;
 
 	FILE *fd_out = output("lyney", weapon_name(weapon), set_name[set]);
@@ -159,8 +158,8 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 		dmg += current_dmg/100;		// to not get out of range. avg <current_dmg>/100 = 5500, this times 40k...
 	}
 	//
-	// output file writing 
-	for (int i = 0; i < dmg_values; i++)
+	// output file writing truncated to +200k dpr
+	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)
 		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
 	
 	ret = dmg/400;	// (dmg * 100) / 40000

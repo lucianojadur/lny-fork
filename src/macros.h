@@ -1,11 +1,11 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#define OUTPUT_DMG_VALUES_FLOOR 200
 
 #define CRIT_HIT(rgn, character)   ((rgn) <= crit_rate(character) ? crit_dmg(character) : 0 )
-
-#define HASH_DMG(value) ((value)/1000)
-#define DEHASH_DMG(value) ((value)*1000)
+#define HASH_DMG(value) (((value)/1000) - OUTPUT_DMG_VALUES_FLOOR)
+#define DEHASH_DMG(value) (((value) + OUTPUT_DMG_VALUES_FLOOR)*1000)
 
 
 #define RED 	"\033[31;0;0m"
