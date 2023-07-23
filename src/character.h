@@ -36,6 +36,8 @@ double crit_rate(character_t *ch);
 
 double crit_dmg(character_t *ch);
 
+char *weapon_name(weapon_t *w);
+
 void character_weapon_destroy(weapon_t *w);
 
 void character_print_stats(character_t *ch);
