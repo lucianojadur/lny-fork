@@ -6,10 +6,10 @@ LDFLAGS=-lm
 
 all:$(PROGRAM)
 
-$(PROGRAM): main.o calc.o character.o  
-	$(CC) $(CFLAGS) -o $(PROGRAM) main.o calc.o character.o $(LDFLAGS) 
+$(PROGRAM): main.o calc.o character.o output.o
+	$(CC) $(CFLAGS) -o $(PROGRAM) main.o calc.o character.o output.o $(LDFLAGS) 
 
-main.o: src/main.c src/calc.h src/character.h src/lyney.h  
+main.o: src/main.c src/calc.h src/character.h src/lyney.h src/output.h
 	$(CC) $(CFLAGS) -c src/main.c
 
 calc.o: src/calc.c src/calc.h src/character.h src/macros.h src/lyney.h
@@ -18,7 +18,8 @@ calc.o: src/calc.c src/calc.h src/character.h src/macros.h src/lyney.h
 character.o: src/character.c src/character.h src/lyney.h
 	$(CC) $(CFLAGS) -c src/character.c
 
-
+output.o: src/output.c src/output.h 
+	$(CC) $(CFLAGS) -c src/output.c
 
 clean:
 	rm -vf  *.o $(PROGRAM)

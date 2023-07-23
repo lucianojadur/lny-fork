@@ -13,6 +13,7 @@ struct character {
 	double crate;
 	double cdmg;
 	double conditional_dmg[3];		// 0: CA dmg, 1: Skill dmg, 2: Burst dmg
+	double conditional_buff;
 };
 
 struct weapon {
@@ -84,7 +85,12 @@ void character_weapon_destroy(weapon_t *w){
 	free(w);
 }
 
+char *weapon_name(weapon_t *w){
+	char * name = malloc(strlen(w->name) + 1);
+	strcpy(name, w->name);
 
+	return name;
+}
 
 void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	if (!ch){
@@ -98,9 +104,10 @@ void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet
 	ch->dmg	= 1.46;
 	ch->crate = 0.245;
 	ch->cdmg = 0.500;
-	ch->conditional_dmg [0]= 0.0;
-	ch->conditional_dmg [1]= 0.0;
-	ch->conditional_dmg [2]= 0.0;
+	ch->conditional_dmg[0] = 0.0;
+	ch->conditional_dmg[1] = 0.0;
+	ch->conditional_dmg[2] = 0.0;
+	ch->conditional_buff = 0.0;
 
 	switch (circlet){
 		case CRIT_RATE: ch->crate += 0.311; break;

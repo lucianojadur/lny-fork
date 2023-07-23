@@ -22,11 +22,21 @@
 #include "character.h"
 #include "lyney.h"
 #include "calc.h"
+#include "output.h"
+#include "macros.h"
 
 
 static void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet);
-static unsigned int run(weapon_t *weapon, artifacts_t set, circlet_t circlet);
+static int run(weapon_t *weapon, artifacts_t set, circlet_t circlet);
 
+
+const char *(set_name[]) = {
+	[LAVAWALKER]		= "lw",
+	[SHIMENAWA] 		= "sr",
+	[WANDERER_TROUPE] 	= "wt",
+	[MAREC_HUNTER]		= "mh",
+	[ATK_ATK]			= "atk"
+};
 
 // main stats arbitrary increases
 const double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
@@ -75,25 +85,27 @@ int main(void){
  *	| Lavawalker |
  *	+ ---------- +
 */
+	printf("[Lavawalker]\n\n");
 	total_dpr = run(signature, LAVAWALKER, CRIT_RATE); 
-	printf("\nTotal dmg (Lavawalker) = " BLU "%u\n-------------------\n\n" RESET, total_dpr);
+	printf("\nTotal dmg = " BLU "%d\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ --------- +
  *	| Shimenawa |
  *	+ --------- +
  */	
+	printf("[Shimenawa]\n\n");
 	total_dpr = run(signature, SHIMENAWA, CRIT_RATE); 
-	printf("\nTotal dmg (Shimenawa) = " RED "%u\n-------------------\n\n" RESET, total_dpr);
+	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ ----------------- +
  *	| Wanderer's Troupe |
  *	+ ----------------- +
  */	
+	printf("[Wanderer's Troupe]\n\n");
 	total_dpr = run(signature, WANDERER_TROUPE, CRIT_RATE); 
-	printf("\nTotal dmg (Wanderer's Troupe) = " RED "%u\n-------------------\n\n" RESET, total_dpr);
+	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 
 	ret = 0;
-	goto success;
 
 /*
  * END 
@@ -110,7 +122,6 @@ free_polar:
 free_sig:
 	character_weapon_destroy(signature);
 
-success:
 	return ret;
 }
 
@@ -124,21 +135,43 @@ void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_
 
 
 static
-unsigned int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
+int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
+	int ret = -1;
+	
 	character_t *lyney = character_create("Lyney", LYNEY_BA_90);	//repeated bruh, must refactor
 	if (lyney == NULL)
-		return -1;
+		return ret;
 	
+	int *values = calloc(1000-OUTPUT_DMG_VALUES_FLOOR, sizeof(int));
+	if (values  == NULL) goto close_values;
+
+	FILE *fd_out = output("lyney", weapon_name(weapon), set_name[set]);
+	if (fd_out == NULL) goto close_fd;
+
 	build_and_show(lyney, weapon, set, circlet);
 	int dmg = 0;
-	for (int i = 0; i < 100; i++){
-		dmg += dpr(lyney);
+	//
+	//START SIMULATION
+	for (int i = 0; i < 40000; i++){
+		int current_dmg = dpr(lyney);
+		values[HASH_DMG(current_dmg)]++;		
+		dmg += current_dmg/100;		// to not get out of range. avg <current_dmg>/100 = 5500, this times 40k...
 	}
+	//
+	// output file writing truncated to +200k dpr
+	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)
+		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
+	
+	ret = dmg/400;	// (dmg * 100) / 40000
+
+close_fd:
+	fclose(fd_out);
+close_values:
+	free(values);
 	free(lyney);
 
-	return dmg/100;
+	return ret;
 }
-
 
 
 
