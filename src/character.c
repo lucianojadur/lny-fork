@@ -193,8 +193,8 @@ void character_add_substats(character_t *ch, int flat_atk, double atk, double cr
 	ch->em +=em;
 }
 
-void character_print_stats(character_t *ch){
-	printf("Base Atk: %d\n"
+void character_print_stats(character_t *ch, FILE* fd){
+	fprintf(fd, "Base Atk: %d\n"
 			"Atk: %d\n"
 			"Dmg%%: %.3f\n"
 			"CR: %.3f\n"

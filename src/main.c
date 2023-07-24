@@ -137,7 +137,7 @@ static
 void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet){
 	character_setup(ch, weapon, set, goblet);
 	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, cr, crit_dmg_rolls, 0);
-	character_print_stats(ch);
+	character_print_stats(ch, stdout);
 }
 
 
@@ -157,6 +157,8 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 
 	build_and_show(lyney, weapon, set, circlet);
 	int dmg = 0;
+
+	output_write_header(fd_out);
 	//
 	//START SIMULATION
 	for (int i = 0; i < 50000; i++){
@@ -169,6 +171,7 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)
 		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
 	
+	output_write_character_stats(fd_out, lyney);
 	ret = dmg/500;	// (dmg * 100) / 40000
 
 close_fd:
