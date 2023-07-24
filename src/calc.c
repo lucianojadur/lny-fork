@@ -11,8 +11,8 @@ static const getter_t conditional_buffs[] = {	// all this bs bc of repecting enc
 	[BURST_DMG_BUFF] = character_Q_dmg
 };
 
-static
-double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG);
+//static
+//double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG);
 
 
 unsigned int dpr(character_t *ch){
@@ -52,8 +52,7 @@ double dpq(character_t *ch , int *stacks){
 	return first_hit + second_hit;
 }
 
-
-static
+//static
 double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG){
 	double crit = (double)rand()/(double)(RAND_MAX);
 	return (character_atk(ch) * multiplier + add_base_bonus)				//base hit dmg

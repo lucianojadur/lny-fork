@@ -54,7 +54,6 @@ int main(int argc, const char* argv[]){
 		return ret;
 	}
 
-
 	srand((unsigned) time(NULL));
 
 	weapon_t *signature = character_weapon_create("the_first_great_magic", 608, 0.662);
@@ -164,14 +163,15 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	for (int i = 0; i < 50000; i++){
 		int current_dmg = dpr(lyney);
 		values[HASH_DMG(current_dmg)]++;		
-		dmg += current_dmg/100;		// to not get out of range. avg <current_dmg>/100 = 5500, this times 40k...
-	}
+		dmg += current_dmg/100;								// to not get out of range.
+	}														// avg <current_dmg>/100 = 5500, this times 40k...
 	//
-	// output file writing truncated to +200k dpr
-	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)
+	// CSV WRITING 
+	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)	// (truncated to +200k dpr)
 		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
 	
-	output_write_character_stats(fd_out, lyney);
+	//output_write_character_stats(fd_out, lyney);
+	
 	ret = dmg/500;	// (dmg * 100) / 40000
 
 close_fd:

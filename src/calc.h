@@ -21,7 +21,7 @@ unsigned int dpr(character_t *ch);
 double dpq(character_t *ch, int *stacks);
 /*
  *  */
-//double dmg(character_t *ch, double multiplier, double add_base_bonus, int dmg_buff_index);
+double dmg(character_t* ch, double multiplier, double add_base_bonus, conditional_dmg_t DMG_BUFF_TAG);
 
 
 #endif
