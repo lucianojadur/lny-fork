@@ -196,12 +196,12 @@ void character_add_substats(character_t *ch, int flat_atk, double atk, double cr
 void character_print_stats(character_t *ch){
 	printf("Base Atk: %d\n"
 			"Atk: %d\n"
-			"Dmg%%: %.2f\n"
-			"CR: %.2f\n"
-			"CD: %.2f\n"
+			"Dmg%%: %.3f\n"
+			"CR: %.3f\n"
+			"CD: %.3f\n"
 			"EM: %d\n"
-			"CA dmg%%: %.2f\n"
-			"Skill dmg%%: %.2f\n"
-			"Burst dmg%%: %.2f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
+			"CA dmg%%: %.3f\n"
+			"Skill dmg%%: %.3f\n"
+			"Burst dmg%%: %.3f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
 								ch->conditional_dmg[0], ch->conditional_dmg[1], ch->conditional_dmg[2]);
 }

@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include "character.h"
 #include "lyney.h"
@@ -28,7 +29,7 @@
 
 static void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet);
 static int run(weapon_t *weapon, artifacts_t set, circlet_t circlet);
-
+static bool cla_check(int argc, const char* argv[], double *cr);
 
 const char *(set_name[]) = {
 	[LAVAWALKER]		= "lw",
@@ -42,11 +43,17 @@ const char *(set_name[]) = {
 const double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
 const double crit_dmg_rolls = 0.148 + 0.21 + 0.14 + 0.204;
 const double crit_rate_rolls = 0.074 + 0.105 + 0.039; 
+double cr = crit_rate_rolls;
 
-
-int main(void){
+int main(int argc, const char* argv[]){
 	int ret = 1;
 	unsigned int total_dpr = 0;
+	
+	if (!cla_check(argc, argv, &cr)){
+		fprintf(stderr, "Usage:\n./run [-cr] [<crit_rate>]\n\nwhere <crit_rate> is a number.\n\n");
+		return ret;
+	}
+
 
 	srand((unsigned) time(NULL));
 
@@ -129,7 +136,7 @@ free_sig:
 static
 void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet){
 	character_setup(ch, weapon, set, goblet);
-	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, crit_rate_rolls, crit_dmg_rolls, 0);
+	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, cr, crit_dmg_rolls, 0);
 	character_print_stats(ch);
 }
 
@@ -152,7 +159,7 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	int dmg = 0;
 	//
 	//START SIMULATION
-	for (int i = 0; i < 40000; i++){
+	for (int i = 0; i < 50000; i++){
 		int current_dmg = dpr(lyney);
 		values[HASH_DMG(current_dmg)]++;		
 		dmg += current_dmg/100;		// to not get out of range. avg <current_dmg>/100 = 5500, this times 40k...
@@ -162,7 +169,7 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)
 		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
 	
-	ret = dmg/400;	// (dmg * 100) / 40000
+	ret = dmg/500;	// (dmg * 100) / 40000
 
 close_fd:
 	fclose(fd_out);
@@ -174,10 +181,22 @@ close_values:
 }
 
 
-
-/*
-double crit_hit(double rgn, character_t *ch){
-	return (rgn <= ch->crate) ? ch->cdmg : 0;
+static
+bool cla_check(int argc, const char* argv[], double *cr){
+	if (argc == 1)
+		return true;
+	else if (argc > 3 || (argc == 3 && strcmp("-cr", argv[1])))
+		return false;
+	
+	if (argc == 3 && !strcmp("-cr", argv[1])){
+		char *endp;
+		*cr = strtod(argv[2], &endp);
+		if (argv[1] != endp && *endp == '\0'){
+			*cr /= (*cr > 1) ? 100.0 : 1;
+			*cr -= 0.245 + 0.311;	//gonna be added to the base 24.5 cr% in character_add_substats()
+			return true;		
+		}		
+	}
+	return false;
 }
-*/
 
