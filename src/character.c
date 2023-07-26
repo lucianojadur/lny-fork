@@ -121,8 +121,9 @@ void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet
 static
 void weapon_add_stats(character_t *ch, weapon_t *weapon){
 	if (!strcmp(weapon->name, "the_first_great_magic") ){
-		ch->atk += ch->base_atk*0.52;
+		ch->atk += ch->base_atk*0.48;
 		ch->cdmg += weapon->main_stat;
+		ch->conditional_dmg[0] += 0.16;
 	}
 	else if (!strcmp(weapon->name, "thundering_pulse")){
 		ch->atk += ch->base_atk * 0.2;
@@ -193,15 +194,15 @@ void character_add_substats(character_t *ch, int flat_atk, double atk, double cr
 	ch->em +=em;
 }
 
-void character_print_stats(character_t *ch){
-	printf("Base Atk: %d\n"
+void character_print_stats(character_t *ch, FILE* fd){
+	fprintf(fd, "Base Atk: %d\n"
 			"Atk: %d\n"
-			"Dmg%%: %.2f\n"
-			"CR: %.2f\n"
-			"CD: %.2f\n"
+			"Dmg%%: %.3f\n"
+			"CR: %.3f\n"
+			"CD: %.3f\n"
 			"EM: %d\n"
-			"CA dmg%%: %.2f\n"
-			"Skill dmg%%: %.2f\n"
-			"Burst dmg%%: %.2f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
+			"CA dmg%%: %.3f\n"
+			"Skill dmg%%: %.3f\n"
+			"Burst dmg%%: %.3f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
 								ch->conditional_dmg[0], ch->conditional_dmg[1], ch->conditional_dmg[2]);
 }

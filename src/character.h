@@ -1,6 +1,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include <stdio.h>
 #include "macros.h"
 
 typedef struct character character_t;
@@ -40,6 +41,6 @@ char *weapon_name(weapon_t *w);
 
 void character_weapon_destroy(weapon_t *w);
 
-void character_print_stats(character_t *ch);
+void character_print_stats(character_t *ch, FILE *fd);
 
 #endif

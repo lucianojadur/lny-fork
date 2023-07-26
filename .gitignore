@@ -52,5 +52,6 @@ Mkfile.old
 dkms.conf
 
 
-#test csv files
+#test csv and executable files
 test/*.csv
+test/test_*
