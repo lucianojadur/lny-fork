@@ -121,8 +121,9 @@ void character_setup(character_t *ch, weapon_t *weapon, artifacts_t set, circlet
 static
 void weapon_add_stats(character_t *ch, weapon_t *weapon){
 	if (!strcmp(weapon->name, "the_first_great_magic") ){
-		ch->atk += ch->base_atk*0.52;
+		ch->atk += ch->base_atk*0.48;
 		ch->cdmg += weapon->main_stat;
+		ch->conditional_dmg[0] += 0.16;
 	}
 	else if (!strcmp(weapon->name, "thundering_pulse")){
 		ch->atk += ch->base_atk * 0.2;
