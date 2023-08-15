@@ -28,8 +28,8 @@ unsigned int dpr(character_t *ch){
 double dpCA_string(character_t *ch, size_t instances){
 	double total_dmg = 0;
 	for (size_t i = 0; i < instances; i++){
-		total_dmg += dmg(ch, PROP_ARROW_9, 0, CA_DMG_BUFF);			//CA #i					0s
-		total_dmg += dmg(ch, PYROTH_STRIKE_9, 0, CA_DMG_BUFF);		//Hat explosion #i		2.0s
+		total_dmg += dmg(ch, PROP_ARROW_9, character_atk(ch) * 0.8, CA_DMG_BUFF);			//CA #i					0s
+		total_dmg += dmg(ch, PYROTH_STRIKE_9, character_atk(ch) * 0.8, CA_DMG_BUFF);		//Hat explosion #i		2.0s
 	}
 	
 	return total_dmg;
