@@ -179,6 +179,8 @@ void set_add_stats(character_t *ch, artifacts_t  set){
 			ch->conditional_dmg[0] += 0.35;
 			break;
 		case MAREC_HUNTER:
+			ch->conditional_dmg[0] += 0.15;
+			ch->crate += 0.36;
 			break;
 		case ATK_ATK:
 			ch->atk += ch->base_atk * 0.36;
@@ -187,9 +189,9 @@ void set_add_stats(character_t *ch, artifacts_t  set){
 	//TODO: agregar sets
 }
 
-void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em){
+void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em, artifacts_t set){
 	ch->atk += ch->base_atk*atk + flat_atk;
-	ch->crate += crit_rate;
+	ch->crate += (set == MAREC_HUNTER) ? 0.15 : crit_rate;
 	ch->cdmg += crit_dmg;
 	ch->em +=em;
 }

@@ -44,6 +44,7 @@ const double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)
 const double crit_dmg_rolls = 0.148 + 0.21 + 0.14 + 0.204;
 const double crit_rate_rolls = 0.074 + 0.105 + 0.039; 
 double cr = crit_rate_rolls;
+int iterations = 100000;
 
 int main(int argc, const char* argv[]){
 	int ret = 1;
@@ -85,7 +86,7 @@ int main(int argc, const char* argv[]){
 		fprintf(stderr, "error at creating the instance of weapon\n");
 		goto free_aqua;
 	}
-	
+	 
 /*
  *	+ ---------- +
  *	| Lavawalker |
@@ -109,6 +110,14 @@ int main(int argc, const char* argv[]){
  */	
 	printf("[Wanderer's Troupe]\n\n");
 	total_dpr = run(signature, WANDERER_TROUPE, CRIT_RATE); 
+	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
+/* 
+ *	+ ------------------- +
+ *	| Marechaussee Hunter |
+ *	+ ------------------- +
+ */	
+	printf("[Marechaussee Hunter]\n\n");
+	total_dpr = run(signature, MAREC_HUNTER, CRIT_DMG); 
 	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 
 	ret = 0;
@@ -135,7 +144,7 @@ free_sig:
 static
 void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet){
 	character_setup(ch, weapon, set, goblet);
-	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, cr, crit_dmg_rolls, 0);
+	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, cr, crit_dmg_rolls, 0, set);
 	character_print_stats(ch, stdout);
 }
 
@@ -148,8 +157,8 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	if (lyney == NULL)
 		return ret;
 	
-	int *values = calloc(1000-OUTPUT_DMG_VALUES_FLOOR, sizeof(int));
-	if (values  == NULL) goto close_values;
+	int *output_values = calloc(1000-OUTPUT_DMG_VALUES_FLOOR, sizeof(int));
+	if (output_values  == NULL) goto close_values;
 
 	FILE *fd_out = output("lyney", weapon_name(weapon), set_name[set]);
 	if (fd_out == NULL) goto close_fd;
@@ -160,24 +169,24 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	output_write_header(fd_out);
 	//
 	//START SIMULATION
-	for (int i = 0; i < 50000; i++){
+	for (int i = 0; i < iterations; i++){
 		int current_dmg = dpr(lyney);
-		values[HASH_DMG(current_dmg)]++;		
+		output_values[HASH_DMG(current_dmg)]++;		
 		dmg += current_dmg/100;								// to not get out of range.
 	}														// avg <current_dmg>/100 = 5500, this times 40k...
 	//
 	// CSV WRITING 
 	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)	// (truncated to +200k dpr)
-		output_write_line(fd_out, DEHASH_DMG(i), values[i]);		
+		output_write_line(fd_out, DEHASH_DMG(i), output_values[i]);		
 	
 	//output_write_character_stats(fd_out, lyney);
 	
-	ret = dmg/500;	// (dmg * 100) / 40000
+	ret = dmg/(iterations/100);	// (dmg * 100) / #iterations
 
 close_fd:
 	fclose(fd_out);
 close_values:
-	free(values);
+	free(output_values);
 	free(lyney);
 
 	return ret;

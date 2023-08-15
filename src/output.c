@@ -22,7 +22,7 @@ FILE* output(const char *character, const char *weapon, const char *set){
 }
 
 void output_write_header(FILE *o){
-	fprintf(o, "Dmg value, samples\n");
+	fprintf(o, "DMG_VALUE,SAMPLES\n");
 }
 
 void output_write_line(FILE *o, unsigned int value, unsigned int n){
