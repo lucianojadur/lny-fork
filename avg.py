@@ -26,7 +26,7 @@ def run(dataset, artifact_set):
 	print(f'Std dev: {dmg_df.std()}')
 	print(f'--------------\n')
 
-run(pd.read_csv('./lyney_the_first_great_magic_mh.csv'), 'MARECHUSSEE HUNTER')
+run(pd.read_csv('./lyney_the_first_great_magic_mh.csv'), 'MARECHAUSSEE HUNTER')
 run(pd.read_csv('./lyney_the_first_great_magic_lw.csv'), 'LAVAWALKER')
 run(pd.read_csv('./lyney_the_first_great_magic_sr.csv'), 'SHIMENAWA')
 run(pd.read_csv('./lyney_the_first_great_magic_wt.csv'), 'WANDERER TROUPE')

@@ -39,12 +39,15 @@ const char *(set_name[]) = {
 	[ATK_ATK]			= "atk"
 };
 
+
 // main stats arbitrary increases
-const double pyro_res = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
-const double crit_dmg_rolls = 0.148 + 0.21 + 0.14 + 0.204;
-const double crit_rate_rolls = 0.074 + 0.105 + 0.039; 
-double cr = crit_rate_rolls;
-int iterations = 100000;
+const double PYRO_RES = 0.25, atk_rolls = 0.105 + 0.093, bennet_buff = (178+620)*1.12 + 926*0.2;	// 80/90, Alley Flash lv 90, Burst lv 12, pre c6
+const double CRIT_DMG_ROLLS = 0.148 + 0.21 + 0.14 + 0.204;
+const double CRIT_RATE_ROLLS = 0.06 + 0.090 + 0.027; 
+double cr = CRIT_RATE_ROLLS;
+
+int iterations = 100000;	// default
+
 
 int main(int argc, const char* argv[]){
 	int ret = 1;
@@ -56,6 +59,8 @@ int main(int argc, const char* argv[]){
 	}
 
 	srand((unsigned) time(NULL));
+	
+	weapon_t *weapon = NULL;
 
 	weapon_t *signature = character_weapon_create("the_first_great_magic", 608, 0.662);
 	if (signature == NULL){
@@ -94,7 +99,7 @@ int main(int argc, const char* argv[]){
 */
 	printf("[Lavawalker]\n\n");
 	total_dpr = run(signature, LAVAWALKER, CRIT_RATE); 
-	printf("\nTotal dmg = " BLU "%d\n-------------------\n\n" RESET, total_dpr);
+	printf("\nAvg DPR = " BLU "%d\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ --------- +
  *	| Shimenawa |
@@ -102,7 +107,7 @@ int main(int argc, const char* argv[]){
  */	
 	printf("[Shimenawa]\n\n");
 	total_dpr = run(signature, SHIMENAWA, CRIT_RATE); 
-	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
+	printf("\nAvg DPR = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ ----------------- +
  *	| Wanderer's Troupe |
@@ -110,7 +115,7 @@ int main(int argc, const char* argv[]){
  */	
 	printf("[Wanderer's Troupe]\n\n");
 	total_dpr = run(signature, WANDERER_TROUPE, CRIT_RATE); 
-	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
+	printf("\nAvg DPR = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 /* 
  *	+ ------------------- +
  *	| Marechaussee Hunter |
@@ -118,7 +123,7 @@ int main(int argc, const char* argv[]){
  */	
 	printf("[Marechaussee Hunter]\n\n");
 	total_dpr = run(signature, MAREC_HUNTER, CRIT_DMG); 
-	printf("\nTotal dmg = " RED "%d\n-------------------\n\n" RESET, total_dpr);
+	printf("\nAvg DPR = " RED "%d\n-------------------\n\n" RESET, total_dpr);
 
 	ret = 0;
 
@@ -144,7 +149,7 @@ free_sig:
 static
 void build_and_show(character_t *ch, weapon_t *weapon, artifacts_t set, circlet_t goblet){
 	character_setup(ch, weapon, set, goblet);
-	character_add_substats(ch, bennet_buff, pyro_res + atk_rolls, cr, crit_dmg_rolls, 0, set);
+	character_add_substats(ch, bennet_buff, PYRO_RES + atk_rolls, cr, CRIT_DMG_ROLLS, 0, set);
 	character_print_stats(ch, stdout);
 }
 
@@ -179,8 +184,6 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)	// (truncated to +200k dpr)
 		output_write_line(fd_out, DEHASH_DMG(i), output_values[i]);		
 	
-	//output_write_character_stats(fd_out, lyney);
-	
 	ret = dmg/(iterations/100);	// (dmg * 100) / #iterations
 
 close_fd:
@@ -197,18 +200,27 @@ static
 bool cla_check(int argc, const char* argv[], double *cr){
 	if (argc == 1)
 		return true;
-	else if (argc > 3 || (argc == 3 && strcmp("-cr", argv[1])))
+	else if ((argc != 3 && argc != 5) || 
+			(argc == 3 && (strcmp("-cr", argv[1]) && strcmp("-i", argv[1])))
+			)
 		return false;
-	
-	if (argc == 3 && !strcmp("-cr", argv[1])){
-		char *endp;
-		*cr = strtod(argv[2], &endp);
-		if (argv[1] != endp && *endp == '\0'){
-			*cr /= (*cr > 1) ? 100.0 : 1;
-			*cr -= 0.245 + 0.311;	//gonna be added to the base 24.5 cr% in character_add_substats()
-			return true;		
-		}		
+	//
+	// parse command line arguments
+	char *endp;
+	for(size_t i = 1; i < argc; i++){
+		if(strcmp(argv[i], "-cr") == 0){
+			*cr = strtod(argv[i+1], &endp);
+			if (argv[i+1] != endp && (*endp == ' ' || *endp == '\0')){
+				printf("crit rate = %f\n", *cr);
+				*cr /= (*cr > 1) ? 100.0 : 1;
+				*cr -= 0.245 + 0.311;	//gonna be added to the base 24.5 cr% in character_add_substats()
+			}		
+		}
+		else if(strcmp(argv[i], "-i") == 0){
+			iterations = strtod(argv[i+1], &endp);
+			printf("# of iterations = %d\n", (int)iterations);
+		}
 	}
-	return false;
+	return true;
 }
 
