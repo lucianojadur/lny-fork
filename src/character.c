@@ -179,6 +179,8 @@ void set_add_stats(character_t *ch, artifacts_t  set){
 			ch->conditional_dmg[0] += 0.35;
 			break;
 		case MAREC_HUNTER:
+			ch->conditional_dmg[0] += 0.15;
+			ch->crate += 0.36;
 			break;
 		case ATK_ATK:
 			ch->atk += ch->base_atk * 0.36;
@@ -187,9 +189,9 @@ void set_add_stats(character_t *ch, artifacts_t  set){
 	//TODO: agregar sets
 }
 
-void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em){
+void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em, artifacts_t set){
 	ch->atk += ch->base_atk*atk + flat_atk;
-	ch->crate += crit_rate;
+	ch->crate += (set == MAREC_HUNTER) ? 0.039 : crit_rate;
 	ch->cdmg += crit_dmg;
 	ch->em +=em;
 }
@@ -197,12 +199,12 @@ void character_add_substats(character_t *ch, int flat_atk, double atk, double cr
 void character_print_stats(character_t *ch, FILE* fd){
 	fprintf(fd, "Base Atk: %d\n"
 			"Atk: %d\n"
-			"Dmg%%: %.3f\n"
+			"Dmg bonus: %.3f\n"
 			"CR: %.3f\n"
 			"CD: %.3f\n"
 			"EM: %d\n"
-			"CA dmg%%: %.3f\n"
-			"Skill dmg%%: %.3f\n"
-			"Burst dmg%%: %.3f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
+			"CA dmg: %.3f\n"
+			"Skill dmg: %.3f\n"
+			"Burst dmg: %.3f\n", ch->base_atk, ch->atk, ch->dmg, ch->crate, ch->cdmg, ch->em,
 								ch->conditional_dmg[0], ch->conditional_dmg[1], ch->conditional_dmg[2]);
 }
