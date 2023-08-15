@@ -1,0 +1,28 @@
+MARECHAUSSEE HUNTER:
+Mean: 0    605719.62
+dtype: float64
+Std dev: 0    87013.571934
+dtype: float64
+--------------
+
+LAVAWALKER:
+Mean: 0    576348.77
+dtype: float64
+Std dev: 0    69610.288646
+dtype: float64
+--------------
+
+SHIMENAWA:
+Mean: 0    593012.6
+dtype: float64
+Std dev: 0    71009.128598
+dtype: float64
+--------------
+
+WANDERER TROUPE:
+Mean: 0    548744.49
+dtype: float64
+Std dev: 0    65502.811473
+dtype: float64
+--------------
+

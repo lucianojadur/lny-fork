@@ -191,7 +191,7 @@ void set_add_stats(character_t *ch, artifacts_t  set){
 
 void character_add_substats(character_t *ch, int flat_atk, double atk, double crit_rate, double crit_dmg, double em, artifacts_t set){
 	ch->atk += ch->base_atk*atk + flat_atk;
-	ch->crate += (set == MAREC_HUNTER) ? 0.039 : crit_rate;
+	ch->crate += (set == MAREC_HUNTER) ? 0.095 : crit_rate;
 	ch->cdmg += crit_dmg;
 	ch->em +=em;
 }
