@@ -158,7 +158,7 @@ static
 int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	int ret = -1;
 	
-	character_t *lyney = character_create("Lyney", LYNEY_BA_90);	//repeated bruh, must refactor
+	character_t *lyney = character_create(LYNEY_BA_90);	//repeated, must refactor
 	if (lyney == NULL)
 		return ret;
 	
@@ -177,8 +177,8 @@ int run(weapon_t *weapon, artifacts_t set, circlet_t circlet){
 	for (int i = 0; i < iterations; i++){
 		int current_dmg = dpr(lyney);
 		output_values[HASH_DMG(current_dmg)]++;		
-		dmg += current_dmg/100;								// to not get out of range.
-	}														// avg <current_dmg>/100 = 5500, this times 40k...
+		dmg += current_dmg/100;			// to not get out of range.
+	}						// avg <current_dmg>/100 = 5500, this times 40k...
 	//
 	// CSV WRITING 
 	for (int i = 0; i < 1000-OUTPUT_DMG_VALUES_FLOOR; i++)	// (truncated to +200k dpr)
