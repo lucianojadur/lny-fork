@@ -27,12 +27,12 @@ static void weapon_add_stats(character_t *ch, weapon_t *weapon);
 static void set_add_stats(character_t *ch, artifacts_t set);
 
 
-character_t* character_create(const char *name, int base_atk){
+character_t* character_create(int base_atk){
     character_t *new = malloc(sizeof(character_t));
     if (new == NULL)
         return NULL;
 
-    new->base_atk = base_atk;;
+    new->base_atk = base_atk;
     return new;
 }
 
@@ -85,7 +85,7 @@ void character_weapon_destroy(weapon_t *w){
 	free(w);
 }
 
-char *weapon_name(weapon_t *w){
+char* weapon_name(weapon_t *w){
 	char * name = malloc(strlen(w->name) + 1);
 	strcpy(name, w->name);
 
