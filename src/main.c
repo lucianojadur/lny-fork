@@ -69,25 +69,25 @@ int main(int argc, const char* argv[]){
 	}
 	
 	weapon_t *polar = character_weapon_create("polar_star", 608, 0.331);
-	if (signature == NULL){
+	if (polar == NULL){
 		fprintf(stderr, "error at creating the instance of weapon\n");
 		goto free_polar;
 	}
 
 	weapon_t *harp = character_weapon_create("skyward_harp", 674, 0.221);
-	if (signature == NULL){
+	if (harp == NULL){
 		fprintf(stderr, "error at creating the instance of weapon\n");
 		goto free_harp;
 	}
 
 	weapon_t *pulse = character_weapon_create("thundering_pulse", 608, 0.662);
-	if (signature == NULL){
+	if (pulse == NULL){
 		fprintf(stderr, "error at creating the instance of weapon\n");
 		goto free_pulse;
 	}
 
 	weapon_t *aqua = character_weapon_create("aqua_simulacra", 542, 0.882);
-	if (signature == NULL){
+	if (aqua == NULL){
 		fprintf(stderr, "error at creating the instance of weapon\n");
 		goto free_aqua;
 	}
