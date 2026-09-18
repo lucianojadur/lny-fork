@@ -8,16 +8,16 @@
 
 
 /*
- * dmg per Elemental skill (total)*/
+ * dmg per charged attack (total)*/
 double dpCA_string(character_t *ch, size_t instances);
 /*
- * dmg per Burst (tick at S-T, no quad. scaling)*/
+ * dmg per Elemental skill (total) */
 double dpe(character_t *ch, int stacks);
 /*
  * dmg per Rotation (Burst total + 1 E total)*/
 unsigned int dpr(character_t *ch);
 /*
- *  */
+ *  dmg per Burst (tick at S-T, no quad. scaling) */
 double dpq(character_t *ch, int *stacks);
 /*
  *  */
